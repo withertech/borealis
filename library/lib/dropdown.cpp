@@ -31,8 +31,8 @@
 namespace brls
 {
 
-Dropdown::Dropdown(std::string title, std::vector<std::string> values, ValueSelectedEvent::Callback cb, size_t selected)
-    : title(title)
+Dropdown::Dropdown(std::string title, std::vector<std::string> values, ValueSelectedEvent::Callback cb, size_t selected, bool isManualCallback)
+    : title(title), isManualCallback(isManualCallback)
 {
     Style* style = Application::getStyle();
 
@@ -60,7 +60,7 @@ Dropdown::Dropdown(std::string title, std::vector<std::string> values, ValueSele
 
         item->getClickEvent()->subscribe([this, i](View* view) {
             this->valueEvent.fire(i);
-            Application::popView();
+            if(not this->isManualCallback) Application::popView();
         });
 
         this->list->addView(item);
@@ -181,9 +181,9 @@ View* Dropdown::getDefaultFocus()
     return this->list->getDefaultFocus();
 }
 
-void Dropdown::open(std::string title, std::vector<std::string> values, ValueSelectedEvent::Callback cb, int selected)
+void Dropdown::open(std::string title, std::vector<std::string> values, ValueSelectedEvent::Callback cb, int selected, bool isManualCallback)
 {
-    Dropdown* dropdown = new Dropdown(title, values, cb, selected);
+    Dropdown* dropdown = new Dropdown(title, values, cb, selected, isManualCallback);
     Application::pushView(dropdown);
 }
 

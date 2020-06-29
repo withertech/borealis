@@ -42,9 +42,11 @@ typedef Event<int> ValueSelectedEvent;
 class Dropdown : public View
 {
   private:
-    Dropdown(std::string title, std::vector<std::string> values, ValueSelectedEvent::Callback cb, size_t selected = 0);
+    Dropdown(std::string title, std::vector<std::string> values, ValueSelectedEvent::Callback cb, size_t selected = 0, bool isManualCallback = false);
 
     std::string title;
+
+    bool isManualCallback;
 
     int valuesCount;
 
@@ -69,7 +71,7 @@ class Dropdown : public View
     void willAppear(bool resetState = false) override;
     void willDisappear(bool resetState = false) override;
 
-    static void open(std::string title, std::vector<std::string> values, ValueSelectedEvent::Callback cb, int selected = -1);
+    static void open(std::string title, std::vector<std::string> values, ValueSelectedEvent::Callback cb, int selected = -1, bool isManualCallback = false);
 
     bool isTranslucent() override
     {
