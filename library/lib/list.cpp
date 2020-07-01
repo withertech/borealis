@@ -186,6 +186,10 @@ void ListItem::setChecked(bool checked)
     this->checked = checked;
 }
 
+void ListItem::setLabel(std::string label) {
+    ListItem::label = label;
+}
+
 bool ListItem::onClick()
 {
     return this->clickEvent.fire(this);
