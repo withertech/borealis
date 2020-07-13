@@ -38,6 +38,8 @@ class ListItem : public View
     std::string subLabel;
     std::string value;
     bool valueFaint;
+    NVGcolor valueActiveColor;
+    bool valueActiveColorIsSet;
 
     std::string oldValue;
     bool oldValueFaint;
@@ -96,6 +98,7 @@ class ListItem : public View
      * use a darker color (typically "OFF" labels)
      */
     void setValue(std::string value, bool faint = false, bool animate = true);
+    void setValueActiveColor(NVGcolor color);
     std::string getValue();
 
     GenericEvent* getClickEvent();
