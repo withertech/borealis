@@ -33,7 +33,7 @@ namespace brls
 // TODO: Use a Label with integrated ticker
 class ListItem : public View
 {
-  private:
+  protected:
     std::string label;
     std::string subLabel;
     std::string value;
@@ -88,7 +88,6 @@ class ListItem : public View
     void setChecked(bool checked);
 
     void setLabel(std::string label);
-
     std::string getLabel();
 
     /**
@@ -128,12 +127,13 @@ class SelectListItem : public ListItem
     SelectListItem(std::string label, std::vector<std::string> values, unsigned selectedValue = 0, std::string description = "");
 
     void setSelectedValue(unsigned value);
+    unsigned getSelectedValue();
 
     ValueSelectedEvent* getValueSelectedEvent();
 
-  private:
+  protected:
     std::vector<std::string> values;
-    unsigned selectedValue;
+    unsigned selectedValue = 0;
 
     ValueSelectedEvent valueEvent;
 };
@@ -144,7 +144,7 @@ class SelectListItem : public ListItem
 // changes
 class ToggleListItem : public ListItem
 {
-  private:
+  protected:
     bool toggleState;
     std::string onValue, offValue;
 
@@ -165,9 +165,10 @@ class InputListItem : public ListItem
   protected:
     std::string helpText;
     int maxInputLength;
+    int kbdDisableBitmask;
 
   public:
-    InputListItem(std::string label, std::string initialValue, std::string helpText, std::string description = "", int maxInputLength = 32);
+    InputListItem(std::string label, std::string initialValue, std::string helpText, std::string description = "", int maxInputLength = 32, int kbdDisableBitmask = KeyboardKeyDisableBitmask::KEYBOARD_DISABLE_NONE);
 
     virtual bool onClick() override;
 };
@@ -177,7 +178,7 @@ class InputListItem : public ListItem
 class IntegerInputListItem : public InputListItem
 {
   public:
-    IntegerInputListItem(std::string label, int initialValue, std::string helpText, std::string description = "", int maxInputLength = 32);
+    IntegerInputListItem(std::string label, int initialValue, std::string helpText, std::string description = "", int maxInputLength = 32, int kbdDisableBitmask = KeyboardKeyDisableBitmask::KEYBOARD_DISABLE_NONE);
 
     virtual bool onClick() override;
 };
