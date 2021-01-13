@@ -24,6 +24,7 @@
 #include <borealis/label.hpp>
 #include <borealis/rectangle.hpp>
 #include <borealis/scroll_view.hpp>
+#include <borealis/swkbd.hpp>
 #include <string>
 
 namespace brls
