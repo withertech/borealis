@@ -189,10 +189,6 @@ void ListItem::setChecked(bool checked)
     this->checked = checked;
 }
 
-void ListItem::setLabel(std::string label) {
-    ListItem::label = label;
-}
-
 bool ListItem::onClick()
 {
     return this->clickEvent.fire(this);
@@ -284,15 +280,6 @@ void ListItem::setValue(std::string value, bool faint, bool animate)
     }
 }
 
-void ListItem::setValueActiveColor(NVGcolor color)
-{
-  this->valueActiveColorIsSet = true;
-  this->valueActiveColor.a = color.a;
-  this->valueActiveColor.r = color.r;
-  this->valueActiveColor.g = color.g;
-  this->valueActiveColor.b = color.b;
-}
-
 std::string ListItem::getValue()
 {
     return this->value;
@@ -336,8 +323,6 @@ void ListItem::draw(NVGcontext* vg, int x, int y, unsigned width, unsigned heigh
     // Value
     unsigned valueX = x + width - style->List.Item.padding;
     unsigned valueY = y + (hasSubLabel ? baseHeight - baseHeight / 3 : baseHeight / 2);
-    NVGcolor valueColorDefault = ctx->theme->listItemValueColor;
-    if(this->valueActiveColorIsSet) valueColorDefault = this->valueActiveColor;
 
     nvgTextAlign(vg, NVG_ALIGN_RIGHT | (hasSubLabel ? NVG_ALIGN_TOP : NVG_ALIGN_MIDDLE));
     nvgFontFaceId(vg, ctx->fontStash->regular);
@@ -361,7 +346,7 @@ void ListItem::draw(NVGcontext* vg, int x, int y, unsigned width, unsigned heigh
     }
     else
     {
-        nvgFillColor(vg, a(this->valueFaint ? ctx->theme->listItemFaintValueColor : valueColorDefault));
+        nvgFillColor(vg, a(this->valueFaint ? ctx->theme->listItemFaintValueColor : ctx->theme->listItemValueColor));
         nvgFontSize(vg, style->List.Item.valueSize);
         nvgFontFaceId(vg, ctx->fontStash->regular);
         nvgBeginPath(vg);
@@ -461,11 +446,6 @@ std::string ListItem::getLabel()
     return this->label;
 }
 
-void ListItem::setLabel(std::string label)
-{
-    this->label = label;
-}
-
 ListItem::~ListItem()
 {
     if (this->descriptionView)
@@ -508,11 +488,10 @@ bool ToggleListItem::getToggleState()
     return this->toggleState;
 }
 
-InputListItem::InputListItem(std::string label, std::string initialValue, std::string helpText, std::string description, int maxInputLength, int kbdDisableBitmask)
+InputListItem::InputListItem(std::string label, std::string initialValue, std::string helpText, std::string description, int maxInputLength)
     : ListItem(label, description)
     , helpText(helpText)
     , maxInputLength(maxInputLength)
-    , kbdDisableBitmask(kbdDisableBitmask)
 {
     this->setValue(initialValue, false);
 }
@@ -522,14 +501,14 @@ bool InputListItem::onClick()
     Swkbd::openForText([&](std::string text) {
         this->setValue(text, false);
     },
-        this->helpText, "", this->maxInputLength, this->getValue(), this->kbdDisableBitmask);
+        this->helpText, "", this->maxInputLength, this->getValue());
 
     ListItem::onClick();
     return true;
 }
 
-IntegerInputListItem::IntegerInputListItem(std::string label, int initialValue, std::string helpText, std::string description, int maxInputLength, int kbdDisableBitmask)
-    : InputListItem(label, std::to_string(initialValue), helpText, description, maxInputLength, kbdDisableBitmask)
+IntegerInputListItem::IntegerInputListItem(std::string label, int initialValue, std::string helpText, std::string description, int maxInputLength)
+    : InputListItem(label, std::to_string(initialValue), helpText, description, maxInputLength)
 {
 }
 
@@ -538,7 +517,7 @@ bool IntegerInputListItem::onClick()
     Swkbd::openForNumber([&](int number) {
         this->setValue(std::to_string(number), false);
     },
-        this->helpText, "", this->maxInputLength, this->getValue(), "", "", this->kbdDisableBitmask);
+        this->helpText, "", this->maxInputLength, this->getValue());
 
     ListItem::onClick();
     return true;
@@ -547,7 +526,7 @@ bool IntegerInputListItem::onClick()
 ListItemGroupSpacing::ListItemGroupSpacing(bool separator)
     : Rectangle(nvgRGBA(0, 0, 0, 0))
 {
-    Theme* theme = Application::getTheme();
+    ThemeValues* theme = Application::getThemeValues();
 
     if (separator)
         this->setColor(theme->listItemSeparatorColor);
@@ -581,11 +560,6 @@ void SelectListItem::setSelectedValue(unsigned value)
         this->selectedValue = value;
         this->setValue(this->values[value], false, false);
     }
-}
-
-unsigned SelectListItem::getSelectedValue()
-{
-    return this->selectedValue;
 }
 
 ValueSelectedEvent* SelectListItem::getValueSelectedEvent()
